@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,opsz@0,12..96;1,12..96&family=General+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <header class="top-nav">
@@ -17,86 +19,227 @@
       <span class="brand-title">Tennis Scheduler</span>
     </div>
     <div class="nav-players">
-      <span class="player-pill">Andrey · 3013 Halenwool Circle, Franklin, TN</span>
-      <span class="player-pill">Lucas · 5729 Iverson Drive, Murfreesboro, TN</span>
+      <span class="player-pill andrey-pill">Andrey · Franklin</span>
+      <span class="player-pill lucas-pill">Lucas · Murfreesboro</span>
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Map → Courts → Book</p>
-        <h1>Choose the right court and book in minutes.</h1>
-        <p class="hero-subtitle">A clean, map-first view of the best three options with drive times and instant booking.</p>
-      </div>
-      <div class="map-shell">
-        <iframe
-          class="map-embed"
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d150000!2d-86.65!3d35.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus"
-          style="border:0;"
-          allowfullscreen=""
-          loading="lazy">
-        </iframe>
-        <div class="map-overlay">
-          <div class="map-marker is-selected" data-court-id="316-tennis" style="left: 30%; top: 40%;">
-            <div class="marker-pill">
-              <span class="marker-icon">🎾</span>
-              <span class="marker-name">316 Tennis</span>
-              <span class="marker-price">$40/hr</span>
-            </div>
-            <div class="marker-pointer"></div>
-          </div>
-          <div class="map-marker" data-court-id="farm-forge" style="left: 40%; top: 70%;">
-            <div class="marker-pill">
-              <span class="marker-icon">🎾</span>
-              <span class="marker-name">Farm &amp; Forge</span>
-              <span class="marker-price">Contact</span>
-            </div>
-            <div class="marker-pointer"></div>
-          </div>
-          <div class="map-marker" data-court-id="adams" style="left: 70%; top: 35%;">
-            <div class="marker-pill">
-              <span class="marker-icon">🎾</span>
-              <span class="marker-name">Adams Tennis</span>
-              <span class="marker-price">$15–20</span>
-            </div>
-            <div class="marker-pointer"></div>
-          </div>
-          <div class="player-marker andrey" style="left: 25%; top: 35%;">
-            <div class="avatar-circle">A</div>
-            <span class="player-label">Andrey</span>
-          </div>
-          <div class="player-marker lucas" style="left: 75%; top: 30%;">
-            <div class="avatar-circle">L</div>
-            <span class="player-label">Lucas</span>
-          </div>
-        </div>
-        <div class="map-detail" id="mapDetail"></div>
-      </div>
+    <section class="map-section">
+      <div id="map" class="map-container"></div>
     </section>
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Court lineup</p>
-          <h2>Choose a court and book instantly</h2>
-        </div>
-      </div>
+    <section class="courts-section">
+      <h2>Choose a court</h2>
       <div class="courts-grid" id="courtsGrid"></div>
     </section>
   </main>
 
   <div class="modal-overlay" id="bookingModal" aria-hidden="true">
     <div class="modal">
-      <button class="modal-close" data-close="modal">✕</button>
+      <button class="modal-close" id="closeModal">✕</button>
       <div class="modal-content" id="bookingModalContent"></div>
     </div>
   </div>
 
-  <footer class="footer">
-    <p>Designed for weekly matchups · Tennis Scheduler</p>
-  </footer>
+  <script>
+    // Courts data
+    const courts = [
+      {
+        id: '316-tennis',
+        name: '316 Tennis',
+        fullName: 'Three Sixteen Tennis',
+        address: '4629 Murfreesboro Rd, Franklin, TN 37067',
+        phone: '(615) 604-3218',
+        website: 'https://www.threesixteentennis.com/',
+        lat: 35.9088,
+        lng: -86.7987,
+        price: '$40/hr',
+        priceNote: 'Players (non-members)',
+        hours: 'Mon-Fri 7am-10pm, Sat 6am-9pm, Sun 6am-2pm',
+        bookingPlatform: 'Court Reserve',
+        bookingUrl: 'https://app.courtreserve.com/',
+        bookingIos: 'https://apps.apple.com/app/court-reserve/id1447850498',
+        bookingAndroid: 'https://play.google.com/store/apps/details?id=com.courtreserve.app',
+        bookingRules: 'Book up to 3 days in advance',
+        color: '#4A90D9'
+      },
+      {
+        id: 'farm-forge',
+        name: 'Farm & Forge',
+        fullName: 'Farm and Forge Club',
+        address: '8445 Horton Highway, College Grove, TN 37046',
+        phone: '',
+        website: 'https://farmandforgeclub.com/',
+        lat: 35.7445,
+        lng: -86.7034,
+        price: 'Members',
+        priceNote: 'Private club',
+        hours: 'Contact for hours',
+        bookingPlatform: 'Club Automation',
+        bookingUrl: 'https://farmandforge.clubautomation.com/',
+        bookingRules: 'Membership required',
+        color: '#7CB342'
+      },
+      {
+        id: 'adams',
+        name: 'Adams Tennis',
+        fullName: 'Adams Tennis Complex',
+        address: '925 Golf Lane, Murfreesboro, TN 37133',
+        phone: '(615) 546-4000',
+        website: 'https://www.murfreesborotn.gov/807/Adams-Tennis-Complex',
+        lat: 35.8497,
+        lng: -86.3899,
+        price: '$15-20',
+        priceNote: 'Non-members per person',
+        hours: 'Mon-Fri 6am-9pm, Sat-Sun 8am-7pm',
+        bookingPlatform: 'City of Murfreesboro',
+        bookingUrl: 'https://www.murfreesborotn.gov/807/Adams-Tennis-Complex',
+        bookingRules: 'Free if reserved within 24hrs (members)',
+        color: '#FF7043'
+      }
+    ];
 
-  <script type="module" src="js/app.js"></script>
+    // Player locations
+    const players = {
+      andrey: { name: 'Andrey', lat: 35.9271, lng: -86.8689, color: '#4A90D9' },
+      lucas: { name: 'Lucas', lat: 35.8456, lng: -86.3897, color: '#7CB342' }
+    };
+
+    // Initialize map
+    const map = L.map('map', {
+      zoomControl: true,
+      scrollWheelZoom: true
+    }).setView([35.85, -86.60], 10);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Custom court marker icon
+    function createCourtIcon(court) {
+      return L.divIcon({
+        className: 'custom-marker',
+        html: `
+          <div class="marker-pill" style="border-left: 4px solid ${court.color}">
+            <span class="marker-icon">🎾</span>
+            <span class="marker-name">${court.name}</span>
+            <span class="marker-price">${court.price}</span>
+          </div>
+        `,
+        iconSize: [140, 50],
+        iconAnchor: [70, 50]
+      });
+    }
+
+    // Custom player marker icon
+    function createPlayerIcon(player) {
+      return L.divIcon({
+        className: 'custom-marker player-marker-icon',
+        html: `
+          <div class="player-dot" style="background: ${player.color}">
+            ${player.name.charAt(0)}
+          </div>
+          <span class="player-name-label">${player.name}</span>
+        `,
+        iconSize: [60, 50],
+        iconAnchor: [30, 25]
+      });
+    }
+
+    // Add court markers
+    courts.forEach(court => {
+      const marker = L.marker([court.lat, court.lng], { icon: createCourtIcon(court) })
+        .addTo(map)
+        .on('click', () => openBookingModal(court));
+    });
+
+    // Add player markers
+    Object.values(players).forEach(player => {
+      L.marker([player.lat, player.lng], { icon: createPlayerIcon(player) }).addTo(map);
+    });
+
+    // Fit bounds to show all markers
+    const allPoints = [
+      ...courts.map(c => [c.lat, c.lng]),
+      ...Object.values(players).map(p => [p.lat, p.lng])
+    ];
+    map.fitBounds(allPoints, { padding: [50, 50] });
+
+    // Render court cards
+    const courtsGrid = document.getElementById('courtsGrid');
+    courts.forEach(court => {
+      const card = document.createElement('div');
+      card.className = 'court-card';
+      card.style.borderTop = `4px solid ${court.color}`;
+      card.innerHTML = `
+        <div class="court-card-header">
+          <h3>${court.name}</h3>
+          <span class="court-price">${court.price}</span>
+        </div>
+        <p class="court-address">${court.address}</p>
+        <p class="court-hours">${court.hours}</p>
+        <div class="court-actions">
+          <button class="btn-book" data-court="${court.id}">Book via ${court.bookingPlatform}</button>
+        </div>
+      `;
+      card.querySelector('.btn-book').addEventListener('click', () => openBookingModal(court));
+      courtsGrid.appendChild(card);
+    });
+
+    // Modal handling
+    const modal = document.getElementById('bookingModal');
+    const modalContent = document.getElementById('bookingModalContent');
+    const closeBtn = document.getElementById('closeModal');
+
+    function openBookingModal(court) {
+      modalContent.innerHTML = `
+        <div class="modal-header" style="border-bottom: 3px solid ${court.color}">
+          <span class="modal-icon">🎾</span>
+          <h2>${court.fullName}</h2>
+        </div>
+        <div class="modal-body">
+          <p class="modal-address">${court.address}</p>
+          <div class="modal-info">
+            <div class="info-row">
+              <strong>Price:</strong> ${court.price} <span class="muted">(${court.priceNote})</span>
+            </div>
+            <div class="info-row">
+              <strong>Hours:</strong> ${court.hours}
+            </div>
+            <div class="info-row">
+              <strong>Booking:</strong> ${court.bookingRules}
+            </div>
+            ${court.phone ? `<div class="info-row"><strong>Phone:</strong> <a href="tel:${court.phone}">${court.phone}</a></div>` : ''}
+          </div>
+          <div class="modal-actions">
+            <a href="${court.bookingUrl}" target="_blank" class="btn-primary">Open ${court.bookingPlatform}</a>
+            <a href="${court.website}" target="_blank" class="btn-secondary">Visit Website</a>
+          </div>
+          ${court.bookingIos ? `
+            <div class="app-links">
+              <span>Download app:</span>
+              <a href="${court.bookingIos}" target="_blank">iOS</a>
+              <a href="${court.bookingAndroid}" target="_blank">Android</a>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    function closeModal() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  </script>
 </body>
 </html>
