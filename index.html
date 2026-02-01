@@ -8,108 +8,118 @@
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,opsz@0,12..96;1,12..96&family=General+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body>
-  <header class="app-header">
+  <header class="top-nav">
     <div class="brand">
-      <div class="logo-ball">🎾</div>
-      <div>
-        <h1>Tennis Scheduler</h1>
-        <p class="tagline">Find the perfect court, split the drive</p>
-      </div>
+      <span class="brand-icon">🎾</span>
+      <span class="brand-title">Tennis Scheduler</span>
     </div>
-    <div class="weather-widget" id="weatherWidget">
-      <div class="weather-icon">⛅</div>
-      <div>
-        <div class="weather-title">Outdoor Weather</div>
-        <div class="weather-desc">Clear skies in Franklin</div>
-      </div>
+    <div class="nav-players">
+      <span class="player-pill">Andrey · Franklin</span>
+      <span class="player-pill">Lucas · Murfreesboro</span>
     </div>
   </header>
 
-  <main class="container">
-    <section class="section cards">
-      <h2>Players</h2>
-      <div class="player-grid" id="players"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-header">
-        <h2>Smart Scheduler</h2>
-        <button id="runScheduler" class="btn primary">Find best sessions</button>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Premium courts, balanced commutes</p>
+        <h1>Find the perfect court. Split the drive. Play more tennis.</h1>
+        <p class="hero-subtitle">A refined planner for Andrey + Lucas with a map-first experience, gorgeous court cards, and smart schedule suggestions.</p>
+        <div class="hero-stats">
+          <div>
+            <strong>12</strong>
+            <span>Curated courts</span>
+          </div>
+          <div>
+            <strong>7</strong>
+            <span>Best overlaps this week</span>
+          </div>
+          <div>
+            <strong>28 min</strong>
+            <span>Average split commute</span>
+          </div>
+        </div>
       </div>
-      <div class="scheduler-grid">
-        <div class="suggestions" id="suggestions"></div>
-        <div class="availability-panel">
-          <h3>Overlap Heatmap</h3>
-          <div id="availabilityHeatmap"></div>
+      <div class="map-shell">
+        <div id="map" class="map"></div>
+        <div class="map-overlay">
+          <div class="search-pill">
+            <span>🔍</span>
+            <input id="courtSearch" type="text" placeholder="Search courts, neighborhoods" />
+          </div>
+          <div class="filter-pill" id="filterPill">
+            <button class="filter-btn is-active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="indoor">Indoor</button>
+            <button class="filter-btn" data-filter="clay">Clay</button>
+            <button class="filter-btn" data-filter="hard">Hard</button>
+          </div>
+        </div>
+        <div class="map-detail" id="mapDetail"></div>
+        <div class="map-legend">
+          <span class="legend-dot andrey"></span> Andrey
+          <span class="legend-dot lucas"></span> Lucas
         </div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-header">
-        <h2>Courts</h2>
-        <div class="filters">
-          <label><input type="checkbox" id="filterIndoor" checked> Indoor</label>
-          <label><input type="checkbox" id="filterOutdoor" checked> Outdoor</label>
-          <label><input type="checkbox" id="filterClay" checked> Clay</label>
-          <label><input type="checkbox" id="filterHard" checked> Hard</label>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Featured courts</p>
+          <h2>Choose your next court</h2>
+        </div>
+        <button class="btn ghost">View availability</button>
+      </div>
+      <div class="courts-grid" id="courtsGrid"></div>
+    </section>
+
+    <section class="section availability">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Overlap matcher</p>
+          <h2>Best shared availability</h2>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Evenings</span>
+          <span class="chip">Weekends</span>
+          <span class="chip">Indoor back-up</span>
         </div>
       </div>
-      <div class="court-grid" id="courts"></div>
-      <div class="chart-card">
-        <h3>Commute Comparison</h3>
-        <div id="commuteChart"></div>
-      </div>
+      <div class="availability-grid" id="availabilityGrid"></div>
     </section>
 
     <section class="section">
-      <div class="section-header">
-        <h2>Weekly Schedule</h2>
-        <div class="toggle">
-          <button class="btn ghost" id="thisWeek">This week</button>
-          <button class="btn ghost" id="nextWeek">Next week</button>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Suggestions</p>
+          <h2>Best matches this week</h2>
         </div>
+        <button class="btn primary">Send schedule</button>
       </div>
-      <div id="calendar"></div>
+      <div class="suggestions" id="suggestions"></div>
     </section>
 
     <section class="section">
-      <div class="section-header">
-        <h2>Session History & Stats</h2>
-        <button id="addResult" class="btn outline">Add result</button>
-      </div>
-      <div class="stats-grid" id="stats"></div>
-      <div class="history-grid">
-        <div class="history-list" id="history"></div>
-        <div class="chart-card">
-          <h3>Session History Timeline</h3>
-          <div id="historyChart"></div>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Upcoming</p>
+          <h2>Upcoming sessions</h2>
         </div>
+        <button class="btn ghost">Add session</button>
       </div>
-    </section>
-
-    <section class="section">
-      <h2>Achievements</h2>
-      <div class="badges" id="badges"></div>
-    </section>
-
-    <section class="section share">
-      <div>
-        <h2>Share schedule</h2>
-        <p>Send a link to your weekly plan to make it official.</p>
-      </div>
-      <button class="btn primary" id="shareLink">Copy share link</button>
+      <div class="upcoming" id="upcoming"></div>
     </section>
   </main>
 
-  <footer>
-    <p>Built with ❤️ for weekly matchups · Tennis Scheduler</p>
+  <footer class="footer">
+    <p>Designed for weekly matchups · Tennis Scheduler</p>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

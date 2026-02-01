@@ -1,32 +1,22 @@
-.logo-ball, .btn.primary {
-  animation: popIn 0.6s ease;
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  70% { transform: scale(1.8); opacity: 0; }
+  100% { opacity: 0; }
 }
 
-.suggestion-card:hover, .court-card:hover, .player-card:hover {
-  transform: translateY(-4px);
-  transition: transform 0.2s ease;
-}
-
-.session-chip:hover {
-  animation: bounce 0.6s ease;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
 }
 
-@keyframes popIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.tennis-ball {
-  width: 16px;
-  height: 16px;
-  background: var(--yellow);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.6);
-  display: inline-block;
-  margin-right: 4px;
+.court-card,
+.suggestion-card,
+.upcoming-card,
+.availability-card {
+  animation: fadeSlide 0.6s ease forwards;
 }
