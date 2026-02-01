@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,opsz@0,12..96;1,12..96&family=General+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body>
   <header class="top-nav">
@@ -18,39 +17,61 @@
       <span class="brand-title">Tennis Scheduler</span>
     </div>
     <div class="nav-players">
-      <span class="player-pill">Andrey · Franklin</span>
-      <span class="player-pill">Lucas · Murfreesboro</span>
+      <span class="player-pill">Andrey · 3013 Halenwool Circle, Franklin, TN</span>
+      <span class="player-pill">Lucas · 5729 Iverson Drive, Murfreesboro, TN</span>
     </div>
   </header>
 
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Three courts. One perfect meetup.</p>
-        <h1>Find the right court, right now. Booking is the feature.</h1>
-        <p class="hero-subtitle">Map-first view of the three best options with live availability, drive times, and curated booking flows for each platform.</p>
-        <div class="hero-stats">
-          <div>
-            <strong>3</strong>
-            <span>Focused courts</span>
-          </div>
-          <div>
-            <strong>2</strong>
-            <span>Balanced players</span>
-          </div>
-          <div>
-            <strong>1</strong>
-            <span>Best match</span>
-          </div>
-        </div>
+        <p class="eyebrow">Map → Courts → Book</p>
+        <h1>Choose the right court and book in minutes.</h1>
+        <p class="hero-subtitle">A clean, map-first view of the best three options with drive times and instant booking.</p>
       </div>
       <div class="map-shell">
-        <div id="map" class="map"></div>
-        <div class="map-detail" id="mapDetail"></div>
-        <div class="map-legend">
-          <span class="legend-dot andrey"></span> Andrey
-          <span class="legend-dot lucas"></span> Lucas
+        <iframe
+          class="map-embed"
+          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d150000!2d-86.65!3d35.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy">
+        </iframe>
+        <div class="map-overlay">
+          <div class="map-marker is-selected" data-court-id="316-tennis" style="left: 30%; top: 40%;">
+            <div class="marker-pill">
+              <span class="marker-icon">🎾</span>
+              <span class="marker-name">316 Tennis</span>
+              <span class="marker-price">$40/hr</span>
+            </div>
+            <div class="marker-pointer"></div>
+          </div>
+          <div class="map-marker" data-court-id="farm-forge" style="left: 40%; top: 70%;">
+            <div class="marker-pill">
+              <span class="marker-icon">🎾</span>
+              <span class="marker-name">Farm &amp; Forge</span>
+              <span class="marker-price">Contact</span>
+            </div>
+            <div class="marker-pointer"></div>
+          </div>
+          <div class="map-marker" data-court-id="adams" style="left: 70%; top: 35%;">
+            <div class="marker-pill">
+              <span class="marker-icon">🎾</span>
+              <span class="marker-name">Adams Tennis</span>
+              <span class="marker-price">$15–20</span>
+            </div>
+            <div class="marker-pointer"></div>
+          </div>
+          <div class="player-marker andrey" style="left: 25%; top: 35%;">
+            <div class="avatar-circle">A</div>
+            <span class="player-label">Andrey</span>
+          </div>
+          <div class="player-marker lucas" style="left: 75%; top: 30%;">
+            <div class="avatar-circle">L</div>
+            <span class="player-label">Lucas</span>
+          </div>
         </div>
+        <div class="map-detail" id="mapDetail"></div>
       </div>
     </section>
 
@@ -60,34 +81,8 @@
           <p class="eyebrow">Court lineup</p>
           <h2>Choose a court and book instantly</h2>
         </div>
-        <button class="btn ghost" id="refreshAvailability">Refresh availability</button>
       </div>
       <div class="courts-grid" id="courtsGrid"></div>
-    </section>
-
-    <section class="section split-grid">
-      <div class="panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Price comparison</p>
-            <h2>Quick cost + drive view</h2>
-          </div>
-        </div>
-        <div class="table-wrapper">
-          <table class="comparison" id="priceComparison">
-            <thead>
-              <tr>
-                <th>Court</th>
-                <th>Price/hr</th>
-                <th>Drive (Andrey)</th>
-                <th>Drive (Lucas)</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="panel optimal" id="optimalMeetup"></div>
     </section>
   </main>
 
@@ -102,7 +97,6 @@
     <p>Designed for weekly matchups · Tennis Scheduler</p>
   </footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
