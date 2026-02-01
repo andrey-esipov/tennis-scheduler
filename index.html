@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎾 Tennis Scheduler</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-ball">🎾</div>
+      <div>
+        <h1>Tennis Scheduler</h1>
+        <p class="tagline">Find the perfect court, split the drive</p>
+      </div>
+    </div>
+    <div class="weather-widget" id="weatherWidget">
+      <div class="weather-icon">⛅</div>
+      <div>
+        <div class="weather-title">Outdoor Weather</div>
+        <div class="weather-desc">Clear skies in Franklin</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section cards">
+      <h2>Players</h2>
+      <div class="player-grid" id="players"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Smart Scheduler</h2>
+        <button id="runScheduler" class="btn primary">Find best sessions</button>
+      </div>
+      <div class="scheduler-grid">
+        <div class="suggestions" id="suggestions"></div>
+        <div class="availability-panel">
+          <h3>Overlap Heatmap</h3>
+          <div id="availabilityHeatmap"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Courts</h2>
+        <div class="filters">
+          <label><input type="checkbox" id="filterIndoor" checked> Indoor</label>
+          <label><input type="checkbox" id="filterOutdoor" checked> Outdoor</label>
+          <label><input type="checkbox" id="filterClay" checked> Clay</label>
+          <label><input type="checkbox" id="filterHard" checked> Hard</label>
+        </div>
+      </div>
+      <div class="court-grid" id="courts"></div>
+      <div class="chart-card">
+        <h3>Commute Comparison</h3>
+        <div id="commuteChart"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Weekly Schedule</h2>
+        <div class="toggle">
+          <button class="btn ghost" id="thisWeek">This week</button>
+          <button class="btn ghost" id="nextWeek">Next week</button>
+        </div>
+      </div>
+      <div id="calendar"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Session History & Stats</h2>
+        <button id="addResult" class="btn outline">Add result</button>
+      </div>
+      <div class="stats-grid" id="stats"></div>
+      <div class="history-grid">
+        <div class="history-list" id="history"></div>
+        <div class="chart-card">
+          <h3>Session History Timeline</h3>
+          <div id="historyChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Achievements</h2>
+      <div class="badges" id="badges"></div>
+    </section>
+
+    <section class="section share">
+      <div>
+        <h2>Share schedule</h2>
+        <p>Send a link to your weekly plan to make it official.</p>
+      </div>
+      <button class="btn primary" id="shareLink">Copy share link</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built with ❤️ for weekly matchups · Tennis Scheduler</p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
