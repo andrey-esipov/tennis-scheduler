@@ -21,6 +21,34 @@ L.control.zoom({ position: "topright" }).addTo(map);
 const markerLayer = L.layerGroup().addTo(map);
 const playerLayer = L.layerGroup().addTo(map);
 
+const bookingModal = document.getElementById("bookingModal");
+const openCourtReserveBtn = document.getElementById("openCourtReserve");
+
+function openBookingModal() {
+  if (!bookingModal) return;
+  bookingModal.classList.add("is-visible");
+  bookingModal.setAttribute("aria-hidden", "false");
+}
+
+function closeBookingModal() {
+  if (!bookingModal) return;
+  bookingModal.classList.remove("is-visible");
+  bookingModal.setAttribute("aria-hidden", "true");
+}
+
+function openCourtReserve() {
+  const court = courts.find((c) => c.id === "316-tennis");
+  if (!court) return;
+  window.location.href = court.bookingDeepLink || court.bookingUrl;
+  window.setTimeout(() => {
+    window.open(court.bookingFallbackUrl || court.bookingUrl, "_blank", "noopener");
+  }, 600);
+}
+
+if (openCourtReserveBtn) {
+  openCourtReserveBtn.addEventListener("click", openCourtReserve);
+}
+
 function markerHtml(court, selected = false) {
   return `
     <div class="map-marker ${selected ? "is-selected" : ""}">
@@ -37,7 +65,7 @@ function markerHtml(court, selected = false) {
 function filteredCourts() {
   return courts.filter((court) => {
     const matchesFilter = state.filter === "all"
-      || (state.filter === "indoor" && court.type === "Indoor")
+      || (state.filter === "indoor" && court.type.toLowerCase().includes("indoor"))
       || (state.filter === "clay" && court.surface === "Clay")
       || (state.filter === "hard" && court.surface === "Hard");
     const search = state.query.trim();
@@ -78,6 +106,7 @@ function renderMapDetail() {
   const court = courts.find((c) => c.id === state.activeCourtId) || courts[0];
   if (!court) return;
   const detail = document.getElementById("mapDetail");
+  const is316 = court.id === "316-tennis";
   detail.innerHTML = `
     <p class="eyebrow">Selected court</p>
     <h3>${court.name}</h3>
@@ -88,17 +117,27 @@ function renderMapDetail() {
       <span class="badge">${court.courts} courts</span>
     </div>
     <p class="meta">Drive: Andrey ${court.drive.andrey} · Lucas ${court.drive.lucas}</p>
-    <a class="cta" href="${court.bookingUrl}" target="_blank" rel="noreferrer">Book or directions →</a>
+    ${is316 ? `<button class="cta booking-btn" data-booking="${court.id}"><span class="booking-logo">CR</span><span data-hover>Book Court</span></button>` : `<a class="cta" href="${court.bookingUrl}" target="_blank" rel="noreferrer">Book or directions →</a>`}
   `;
+  if (is316) {
+    detail.querySelector("[data-booking]").addEventListener("click", openBookingModal);
+  }
 }
 
 function renderCourtGrid() {
   const container = document.getElementById("courtsGrid");
   container.innerHTML = "";
-  filteredCourts().forEach((court) => {
+  const sortedCourts = [...filteredCourts()].sort((a, b) => {
+    if (a.id === "316-tennis") return -1;
+    if (b.id === "316-tennis") return 1;
+    return Number(b.featured) - Number(a.featured);
+  });
+  sortedCourts.forEach((court) => {
     const card = document.createElement("article");
     card.className = `court-card ${court.featured ? "featured" : "standard"} ${court.id === state.activeCourtId ? "is-active" : ""}`;
+    const is316 = court.id === "316-tennis";
     card.innerHTML = `
+      ${court.featured ? `<span class="feature-tag">Featured</span>` : ""}
       <img src="${court.image}" alt="${court.name}">
       <div>
         <h3>${court.name}</h3>
@@ -108,13 +147,28 @@ function renderCourtGrid() {
         <span class="badge">${court.type}</span>
         <span class="badge">${court.surface}</span>
         <span class="badge">${court.rating} ★</span>
+        ${is316 ? `<span class="badge price-tag">$40/hr</span>` : ""}
       </div>
+      ${is316 ? `
+        <div class="booking-section">
+          <div class="booking-row"><span>Hours</span><span>${court.hours["Mon-Fri"]} weekdays</span></div>
+          <div class="booking-row"><span>Questions</span><span>${court.phone}</span></div>
+          <button class="booking-btn" data-booking="${court.id}">
+            <span class="booking-logo">CR</span>
+            <span data-hover>Book Court</span>
+          </button>
+          <a class="inline-link" href="${court.website}" target="_blank" rel="noreferrer">Visit website</a>
+        </div>
+      ` : ""}
       <div class="card-action">
         <div class="meta">Drive ${court.drive.andrey} · ${court.drive.lucas}</div>
         <button class="select-btn" data-court="${court.id}">Select</button>
       </div>
     `;
     card.querySelector(".select-btn").addEventListener("click", () => setActiveCourt(court.id));
+    if (is316) {
+      card.querySelector("[data-booking]").addEventListener("click", openBookingModal);
+    }
     container.appendChild(card);
   });
 }
@@ -205,6 +259,20 @@ function attachHandlers() {
       state.filter = btn.dataset.filter;
       renderAll();
     });
+  });
+
+  if (bookingModal) {
+    bookingModal.addEventListener("click", (event) => {
+      if (event.target === bookingModal || event.target.closest("[data-close='modal']")) {
+        closeBookingModal();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeBookingModal();
+    }
   });
 }
 

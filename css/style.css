@@ -304,6 +304,19 @@ main {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
+.feature-tag {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--text-primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .court-card.featured {
   grid-column: span 6;
   min-height: 260px;
@@ -362,6 +375,70 @@ main {
 
 .select-btn:hover {
   padding-right: 20px;
+}
+
+.booking-section {
+  background: var(--card-mint);
+  border-radius: 20px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.booking-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.price-tag {
+  background: var(--card-coral);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.booking-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: var(--text-primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-btn .booking-logo {
+  background: rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.booking-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+.booking-btn span[data-hover] {
+  display: inline;
+}
+
+.booking-btn span[data-hover]::after {
+  content: " via Court Reserve";
+  opacity: 0;
+  margin-left: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.booking-btn:hover span[data-hover]::after {
+  opacity: 1;
 }
 
 .availability-grid {
@@ -431,6 +508,103 @@ main {
   text-align: center;
   padding: 40px 0 60px;
   color: var(--text-secondary);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--card-white);
+  border-radius: 28px;
+  padding: 28px;
+  width: min(560px, 92vw);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: none;
+  background: #f2f1ec;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.modal-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.modal-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--card-blue);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.modal-body {
+  margin-top: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.modal-section {
+  background: #f7f6f2;
+  padding: 14px 16px;
+  border-radius: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.hours-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.hours-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.modal-cta {
+  display: grid;
+  gap: 12px;
+}
+
+.download-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+}
+
+.inline-link {
+  font-weight: 600;
 }
 
 .map-marker {

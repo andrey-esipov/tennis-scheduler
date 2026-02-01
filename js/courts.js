@@ -1,20 +1,42 @@
 export const courts = [
   {
     id: "316-tennis",
-    name: "316 Tennis Center",
+    name: "Three Sixteen Tennis",
     shortName: "316 Tennis",
-    address: "316 Seaboard Ln, Franklin, TN 37067",
-    type: "Indoor",
+    address: "4629 Murfreesboro Rd, Franklin, TN 37067",
+    phone: "(615) 604-3218",
+    website: "https://www.threesixteentennis.com/",
+    instagram: "@threesixteentennis",
+    bookingPlatform: "Court Reserve",
+    bookingUrl: "https://app.courtreserve.com/",
+    bookingAppIos: "https://apps.apple.com/app/court-reserve/id1447850498",
+    bookingAppAndroid: "https://play.google.com/store/apps/details?id=com.courtreserve.app",
+    hours: {
+      "Mon-Fri": "7am–10pm",
+      "Saturday": "6am–9pm",
+      "Sunday": "6am–2pm"
+    },
+    pricing: {
+      player: 40,
+      member: 0,
+      memberMonthly: 300
+    },
+    bookingAdvance: {
+      player: 3,
+      member: 4
+    },
+    type: "Indoor-Outdoor",
     surface: "Hard",
-    courts: 10,
+    courts: 6,
     rating: 4.9,
-    amenities: ["Pro shop", "Indoor courts", "Outdoor courts"],
+    amenities: ["Indoor courts", "Outdoor courts", "Lessons", "Events"],
     drive: { andrey: "8 min", lucas: "28 min" },
     distance: { andrey: "4.9 mi", lucas: "23.5 mi" },
     coords: [35.9257, -86.8196],
     featured: true,
     image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=900&q=80",
-    bookingUrl: "https://www.google.com/maps/search/?api=1&query=316+Seaboard+Ln+Franklin+TN"
+    bookingFallbackUrl: "https://app.courtreserve.com/",
+    bookingDeepLink: "https://app.courtreserve.com/Online/Reservations/Bookings/6650/"
   },
   {
     id: "farm-forge",
