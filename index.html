@@ -26,38 +26,26 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Premium courts, balanced commutes</p>
-        <h1>Find the perfect court. Split the drive. Play more tennis.</h1>
-        <p class="hero-subtitle">A refined planner for Andrey + Lucas with a map-first experience, gorgeous court cards, and smart schedule suggestions.</p>
+        <p class="eyebrow">Three courts. One perfect meetup.</p>
+        <h1>Find the right court, right now. Booking is the feature.</h1>
+        <p class="hero-subtitle">Map-first view of the three best options with live availability, drive times, and curated booking flows for each platform.</p>
         <div class="hero-stats">
           <div>
-            <strong>12</strong>
-            <span>Curated courts</span>
+            <strong>3</strong>
+            <span>Focused courts</span>
           </div>
           <div>
-            <strong>7</strong>
-            <span>Best overlaps this week</span>
+            <strong>2</strong>
+            <span>Balanced players</span>
           </div>
           <div>
-            <strong>28 min</strong>
-            <span>Average split commute</span>
+            <strong>1</strong>
+            <span>Best match</span>
           </div>
         </div>
       </div>
       <div class="map-shell">
         <div id="map" class="map"></div>
-        <div class="map-overlay">
-          <div class="search-pill">
-            <span>🔍</span>
-            <input id="courtSearch" type="text" placeholder="Search courts, neighborhoods" />
-          </div>
-          <div class="filter-pill" id="filterPill">
-            <button class="filter-btn is-active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="indoor">Indoor</button>
-            <button class="filter-btn" data-filter="clay">Clay</button>
-            <button class="filter-btn" data-filter="hard">Hard</button>
-          </div>
-        </div>
         <div class="map-detail" id="mapDetail"></div>
         <div class="map-legend">
           <span class="legend-dot andrey"></span> Andrey
@@ -69,89 +57,44 @@
     <section class="section">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Featured courts</p>
-          <h2>Choose your next court</h2>
+          <p class="eyebrow">Court lineup</p>
+          <h2>Choose a court and book instantly</h2>
         </div>
-        <button class="btn ghost">View availability</button>
+        <button class="btn ghost" id="refreshAvailability">Refresh availability</button>
       </div>
       <div class="courts-grid" id="courtsGrid"></div>
     </section>
 
-    <section class="section availability">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Overlap matcher</p>
-          <h2>Best shared availability</h2>
+    <section class="section split-grid">
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Price comparison</p>
+            <h2>Quick cost + drive view</h2>
+          </div>
         </div>
-        <div class="chip-row">
-          <span class="chip">Evenings</span>
-          <span class="chip">Weekends</span>
-          <span class="chip">Indoor back-up</span>
+        <div class="table-wrapper">
+          <table class="comparison" id="priceComparison">
+            <thead>
+              <tr>
+                <th>Court</th>
+                <th>Price/hr</th>
+                <th>Drive (Andrey)</th>
+                <th>Drive (Lucas)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
-      <div class="availability-grid" id="availabilityGrid"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Suggestions</p>
-          <h2>Best matches this week</h2>
-        </div>
-        <button class="btn primary">Send schedule</button>
-      </div>
-      <div class="suggestions" id="suggestions"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Upcoming</p>
-          <h2>Upcoming sessions</h2>
-        </div>
-        <button class="btn ghost">Add session</button>
-      </div>
-      <div class="upcoming" id="upcoming"></div>
+      <div class="panel optimal" id="optimalMeetup"></div>
     </section>
   </main>
 
   <div class="modal-overlay" id="bookingModal" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="modal">✕</button>
-      <div class="modal-header">
-        <div class="modal-logo">316</div>
-        <div>
-          <p class="eyebrow">Featured booking</p>
-          <h2>Three Sixteen Tennis</h2>
-          <p class="meta">Reserve courts via Court Reserve</p>
-        </div>
-      </div>
-      <div class="modal-body">
-        <div class="modal-section">
-          <h3>Hours of operation</h3>
-          <ul class="hours-list">
-            <li><span>Mon-Fri</span><span>7am–10pm</span></li>
-            <li><span>Saturday</span><span>6am–9pm</span></li>
-            <li><span>Sunday</span><span>6am–2pm</span></li>
-          </ul>
-        </div>
-        <div class="modal-section">
-          <h3>Pricing</h3>
-          <p class="meta">Players: <strong>$40/hr</strong> · Founding members: 8 hours included with $300/mo</p>
-          <p class="meta">Booking window: Players 3 days · Members 4 days</p>
-        </div>
-        <div class="modal-cta">
-          <button class="btn primary" id="openCourtReserve">Open Court Reserve App</button>
-          <div class="download-links">
-            <a href="https://apps.apple.com/app/court-reserve/id1447850498" target="_blank" rel="noreferrer">Download iOS</a>
-            <a href="https://play.google.com/store/apps/details?id=com.courtreserve.app" target="_blank" rel="noreferrer">Download Android</a>
-          </div>
-        </div>
-        <div class="modal-section">
-          <p class="meta">Questions? Call <a href="tel:16156043218">(615) 604-3218</a></p>
-          <a class="inline-link" href="https://www.threesixteentennis.com/" target="_blank" rel="noreferrer">View website</a>
-        </div>
-      </div>
+      <div class="modal-content" id="bookingModalContent"></div>
     </div>
   </div>
 
