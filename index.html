@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎾 Tennis Scheduler</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/animations.css" />
+  <title>Tennis Scheduler — Smart Match Planning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header class="top-nav">
     <div class="brand">
       <span class="brand-icon">🎾</span>
-      <span class="brand-title">Tennis Scheduler</span>
+      <div>
+        <p class="brand-title">Tennis Scheduler</p>
+        <p class="brand-subtitle">Smart planning for Andrey + Lucas</p>
+      </div>
     </div>
     <div class="nav-players">
       <span class="player-pill andrey-pill">Andrey · Franklin</span>
@@ -25,13 +26,73 @@
   </header>
 
   <main>
-    <section class="map-section">
-      <div id="map" class="map-container"></div>
+    <section class="hero-grid">
+      <div class="card hero-card" id="recommendationCard">
+        <!-- Filled by JS -->
+      </div>
+      <div class="card map-card">
+        <div class="map-header">
+          <div>
+            <p class="eyebrow">Map view</p>
+            <h2>Courts & homes</h2>
+            <p class="muted">See the quickest commute for both players.</p>
+          </div>
+          <div class="map-badge">📍 3 Courts • 2 Homes</div>
+        </div>
+        <div id="map" class="map-container"></div>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <div class="card" id="weatherCard"></div>
+      <div class="card" id="fairnessCard"></div>
     </section>
 
     <section class="courts-section">
-      <h2>Choose a court</h2>
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Courts</p>
+          <h2>Compare all locations</h2>
+        </div>
+        <div class="section-actions">
+          <button class="ghost-btn" id="refreshWeather">Refresh weather</button>
+        </div>
+      </div>
       <div class="courts-grid" id="courtsGrid"></div>
+    </section>
+
+    <section class="sessions-grid">
+      <div class="card session-form-card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Quick log</p>
+            <h3>Log a completed session</h3>
+          </div>
+          <span class="badge">1 click save</span>
+        </div>
+        <form id="sessionForm" class="session-form">
+          <label>
+            Date
+            <input type="date" id="sessionDate" required />
+          </label>
+          <label>
+            Court
+            <select id="sessionCourt" required></select>
+          </label>
+          <button type="submit" class="primary-btn">Save session</button>
+        </form>
+        <p class="muted small">This updates fairness stats and recommendations instantly.</p>
+      </div>
+
+      <div class="card session-history-card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">History</p>
+            <h3>Recent sessions</h3>
+          </div>
+        </div>
+        <div class="session-list" id="sessionList"></div>
+      </div>
     </section>
   </main>
 
@@ -42,204 +103,7 @@
     </div>
   </div>
 
-  <script>
-    // Courts data
-    const courts = [
-      {
-        id: '316-tennis',
-        name: '316 Tennis',
-        fullName: 'Three Sixteen Tennis',
-        address: '4629 Murfreesboro Rd, Franklin, TN 37067',
-        phone: '(615) 604-3218',
-        website: 'https://www.threesixteentennis.com/',
-        lat: 35.9088,
-        lng: -86.7987,
-        price: '$40/hr',
-        priceNote: 'Players (non-members)',
-        hours: 'Mon-Fri 7am-10pm, Sat 6am-9pm, Sun 6am-2pm',
-        bookingPlatform: 'Court Reserve',
-        bookingUrl: 'https://app.courtreserve.com/',
-        bookingIos: 'https://apps.apple.com/app/court-reserve/id1447850498',
-        bookingAndroid: 'https://play.google.com/store/apps/details?id=com.courtreserve.app',
-        bookingRules: 'Book up to 3 days in advance',
-        color: '#4A90D9'
-      },
-      {
-        id: 'farm-forge',
-        name: 'Farm & Forge',
-        fullName: 'Farm and Forge Club',
-        address: '8445 Horton Highway, College Grove, TN 37046',
-        phone: '',
-        website: 'https://farmandforgeclub.com/',
-        lat: 35.7445,
-        lng: -86.7034,
-        price: 'Members',
-        priceNote: 'Private club',
-        hours: 'Contact for hours',
-        bookingPlatform: 'Club Automation',
-        bookingUrl: 'https://farmandforge.clubautomation.com/',
-        bookingRules: 'Membership required',
-        color: '#7CB342'
-      },
-      {
-        id: 'adams',
-        name: 'Adams Tennis',
-        fullName: 'Adams Tennis Complex',
-        address: '925 Golf Lane, Murfreesboro, TN 37133',
-        phone: '(615) 546-4000',
-        website: 'https://www.murfreesborotn.gov/807/Adams-Tennis-Complex',
-        lat: 35.8497,
-        lng: -86.3899,
-        price: '$15-20',
-        priceNote: 'Non-members per person',
-        hours: 'Mon-Fri 6am-9pm, Sat-Sun 8am-7pm',
-        bookingPlatform: 'City of Murfreesboro',
-        bookingUrl: 'https://www.murfreesborotn.gov/807/Adams-Tennis-Complex',
-        bookingRules: 'Free if reserved within 24hrs (members)',
-        color: '#FF7043'
-      }
-    ];
-
-    // Player locations
-    const players = {
-      andrey: { name: 'Andrey', lat: 35.9271, lng: -86.8689, color: '#4A90D9' },
-      lucas: { name: 'Lucas', lat: 35.8456, lng: -86.3897, color: '#7CB342' }
-    };
-
-    // Initialize map
-    const map = L.map('map', {
-      zoomControl: true,
-      scrollWheelZoom: true
-    }).setView([35.85, -86.60], 10);
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '©OpenStreetMap, ©CartoDB',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
-
-    // Custom court marker icon
-    function createCourtIcon(court) {
-      return L.divIcon({
-        className: 'custom-marker',
-        html: `
-          <div class="marker-pill" style="border-left: 4px solid ${court.color}">
-            <span class="marker-icon">🎾</span>
-            <span class="marker-name">${court.name}</span>
-            <span class="marker-price">${court.price}</span>
-          </div>
-        `,
-        iconSize: [140, 50],
-        iconAnchor: [70, 50]
-      });
-    }
-
-    // Custom player marker icon
-    function createPlayerIcon(player) {
-      return L.divIcon({
-        className: 'custom-marker player-marker-icon',
-        html: `
-          <div class="player-dot" style="background: ${player.color}">
-            ${player.name.charAt(0)}
-          </div>
-          <span class="player-name-label">${player.name}</span>
-        `,
-        iconSize: [60, 50],
-        iconAnchor: [30, 25]
-      });
-    }
-
-    // Add court markers
-    courts.forEach(court => {
-      const marker = L.marker([court.lat, court.lng], { icon: createCourtIcon(court) })
-        .addTo(map)
-        .on('click', () => openBookingModal(court));
-    });
-
-    // Add player markers
-    Object.values(players).forEach(player => {
-      L.marker([player.lat, player.lng], { icon: createPlayerIcon(player) }).addTo(map);
-    });
-
-    // Fit bounds to show all markers
-    const allPoints = [
-      ...courts.map(c => [c.lat, c.lng]),
-      ...Object.values(players).map(p => [p.lat, p.lng])
-    ];
-    map.fitBounds(allPoints, { padding: [50, 50] });
-
-    // Render court cards
-    const courtsGrid = document.getElementById('courtsGrid');
-    courts.forEach(court => {
-      const card = document.createElement('div');
-      card.className = 'court-card';
-      card.style.borderTop = `4px solid ${court.color}`;
-      card.innerHTML = `
-        <div class="court-card-header">
-          <h3>${court.name}</h3>
-          <span class="court-price">${court.price}</span>
-        </div>
-        <p class="court-address">${court.address}</p>
-        <p class="court-hours">${court.hours}</p>
-        <div class="court-actions">
-          <button class="btn-book" data-court="${court.id}">Book via ${court.bookingPlatform}</button>
-        </div>
-      `;
-      card.querySelector('.btn-book').addEventListener('click', () => openBookingModal(court));
-      courtsGrid.appendChild(card);
-    });
-
-    // Modal handling
-    const modal = document.getElementById('bookingModal');
-    const modalContent = document.getElementById('bookingModalContent');
-    const closeBtn = document.getElementById('closeModal');
-
-    function openBookingModal(court) {
-      modalContent.innerHTML = `
-        <div class="modal-header" style="border-bottom: 3px solid ${court.color}">
-          <span class="modal-icon">🎾</span>
-          <h2>${court.fullName}</h2>
-        </div>
-        <div class="modal-body">
-          <p class="modal-address">${court.address}</p>
-          <div class="modal-info">
-            <div class="info-row">
-              <strong>Price:</strong> ${court.price} <span class="muted">(${court.priceNote})</span>
-            </div>
-            <div class="info-row">
-              <strong>Hours:</strong> ${court.hours}
-            </div>
-            <div class="info-row">
-              <strong>Booking:</strong> ${court.bookingRules}
-            </div>
-            ${court.phone ? `<div class="info-row"><strong>Phone:</strong> <a href="tel:${court.phone}">${court.phone}</a></div>` : ''}
-          </div>
-          <div class="modal-actions">
-            <a href="${court.bookingUrl}" target="_blank" class="btn-primary">Open ${court.bookingPlatform}</a>
-            <a href="${court.website}" target="_blank" class="btn-secondary">Visit Website</a>
-          </div>
-          ${court.bookingIos ? `
-            <div class="app-links">
-              <span>Download app:</span>
-              <a href="${court.bookingIos}" target="_blank">iOS</a>
-              <a href="${court.bookingAndroid}" target="_blank">Android</a>
-            </div>
-          ` : ''}
-        </div>
-      `;
-      modal.classList.add('active');
-      modal.setAttribute('aria-hidden', 'false');
-    }
-
-    closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    function closeModal() {
-      modal.classList.remove('active');
-      modal.setAttribute('aria-hidden', 'true');
-    }
-  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
