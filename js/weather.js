@@ -11,18 +11,23 @@ export async function getWeather() {
       );
       return {
         date: day.date,
-        avgTemp: day.avgtempF,
-        minTemp: day.mintempF,
-        maxTemp: day.maxtempF,
+        avgTemp: day.avgtempC,
+        minTemp: day.mintempC,
+        maxTemp: day.maxtempC,
         desc: day.hourly?.[4]?.weatherDesc?.[0]?.value || "",
         chanceOfRain: chance,
       };
     });
 
+    const rainy = forecast.some((day) => day.chanceOfRain >= 50);
+
     return {
-      temp: current?.temp_F || "--",
+      temp: current?.temp_C || "--",
       desc: current?.weatherDesc?.[0]?.value || "",
       forecast,
+      recommendation: rainy
+        ? "Rain possible — indoor courts are safest."
+        : "Great day for outdoor courts!",
     };
   } catch (error) {
     console.error("Weather fetch failed", error);

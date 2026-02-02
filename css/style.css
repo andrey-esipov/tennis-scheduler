@@ -77,6 +77,13 @@ main {
   box-shadow: var(--shadow-soft);
   font-size: 0.85rem;
   font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
 }
 
 .andrey-pill { border-left: 4px solid #FF5A5F; }
@@ -240,40 +247,57 @@ main {
   overflow: hidden;
 }
 
+.map-wrapper {
+  position: relative;
+}
+
 .custom-marker {
   background: transparent;
   border: none;
 }
 
-.marker-pill {
+.court-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.marker-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   background: white;
-  padding: 10px 14px;
-  border-radius: 999px;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  border: 3px solid var(--primary);
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.marker-pill:hover {
-  transform: translateY(-2px);
-}
-
-.marker-icon {
-  font-size: 1rem;
-}
-
-.marker-name {
-  font-weight: 600;
-}
-
-.marker-price {
+  justify-content: center;
   font-weight: 700;
-  color: #1f7a6a;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.marker-circle:hover {
+  transform: scale(1.15);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.marker-circle svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.marker-label {
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 .player-dot {
@@ -288,6 +312,63 @@ main {
   font-size: 16px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   border: 3px solid white;
+}
+
+.court-detail-panel {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  padding: 20px;
+  opacity: 0;
+  transform: translateY(120%);
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+.court-detail-panel.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.court-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.court-detail-header h3 {
+  font-size: 1.2rem;
+}
+
+.court-detail-close {
+  border: none;
+  background: #f3f3f3;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.court-detail-meta {
+  display: grid;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.court-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .player-name-label {
@@ -377,6 +458,59 @@ main {
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.weather-card {
+  display: grid;
+  gap: 18px;
+}
+
+.weather-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.weather-icon {
+  font-size: 1.6rem;
+}
+
+.weather-temp {
+  font-size: 1.4rem;
+}
+
+.weather-forecast {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.forecast-day {
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  font-size: 0.85rem;
+}
+
+.weather-recommendation {
+  background: #fff6f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: #b2502b;
+}
+
+.weather-loading {
+  background: linear-gradient(90deg, #f2f2f2 25%, #fafafa 50%, #f2f2f2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  height: 12px;
+  border-radius: 999px;
 }
 
 .session-form {
@@ -486,6 +620,19 @@ main {
 .modal-actions button {
   text-align: center;
   text-decoration: none;
+}
+
+.empty-state {
+  padding: 18px;
+  border-radius: 14px;
+  background: #f9f9f9;
+  color: var(--muted);
+  text-align: center;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @media (max-width: 960px) {
